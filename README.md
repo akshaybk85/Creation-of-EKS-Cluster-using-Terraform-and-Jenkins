@@ -46,8 +46,8 @@ Create an EC2 instance with:
 
 SSH into the instance and install:
 
-### Java & Jenkins
-===================================
+### Java & Jenkins, Terraform, AWS CLI, Kubectl
+
 ```bash
 sudo apt update
 sudo apt install openjdk-17-jdk -y
