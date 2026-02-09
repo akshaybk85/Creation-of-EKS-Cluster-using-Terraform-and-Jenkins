@@ -1,0 +1,55 @@
+pipeline    {
+    agent any
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_DEFAULT_REGION = 'us-east-1'
+    }
+    stages {
+        stage('Git checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/akshaybk85/Creation-of-EKS-Cluster-using-Terraform-and-Jenkins.git']])
+            }
+        }
+        stage('Terraform Init') {
+            steps {
+                script {
+                dir('Terraform') { 
+                sh 'terraform init'
+            }
+        }
+        }
+        }
+        stage('Terraform Validate') {
+            steps {
+                script {
+                dir('Terraform') { 
+                sh 'terraform validate'
+            }
+        }
+        }
+        }
+        
+        stage('Terraform Plan') {
+            steps {
+                script {
+                dir('Terraform') { 
+                sh 'terraform Plan'
+                input message: 'Do you want to proceed with the plan?', ok: 'Yes'
+            }
+           
+        }
+        }
+        }
+        stage('Create /Destroy EKS Cluster') {
+            steps {
+                script {
+                dir('Terraform') { 
+                sh 'terraform $action -auto-approve'
+            }
+        }
+        }
+        }
+        
+    }
+}
